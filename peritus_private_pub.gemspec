@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "peritus_private_pub"
-  s.version     = "1.0.0"
+  s.version     = "1.0.2"
   s.author      = "Tyler DeWitt"
   s.email       = "tdewitt@peritus.com"
   s.homepage    = "https://github.com/PeritusSolutions/peritus_private_pub"

@@ -32,7 +32,8 @@ module PrivatePub
 
     # Sends the given message hash to the Faye server using Net::HTTP.
     def publish_message(message)
-      raise Error, "No server specified, ensure private_pub.yml was loaded properly." unless config[:server]
+      if config[:server].nil? or config[:server].blank?
+        raise Error, "No server specified, ensure private_pub.yml was loaded properly and that LOCAL_IP is defined."
       url = URI.parse(config[:server])
 
       form = Net::HTTP::Post.new(url.path.empty? ? '/' : url.path)
@@ -57,6 +58,8 @@ module PrivatePub
     # Returns a subscription hash to pass to the PrivatePub.sign call in JavaScript.
     # Any options passed are merged to the hash.
     def subscription(options = {})
+      if config[:server].nil? or config[:server].blank?
+        raise Error, "No server specified, ensure private_pub.yml was loaded properly and that LOCAL_IP is defined."
       sub = {:server => config[:server], :timestamp => (Time.now.to_f * 1000).round}.merge(options)
       sub[:signature] = Digest::SHA1.hexdigest([config[:secret_token], sub[:channel], sub[:timestamp]].join)
       sub
