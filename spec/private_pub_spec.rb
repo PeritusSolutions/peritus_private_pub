@@ -26,6 +26,12 @@ describe PrivatePub do
     PrivatePub.config[:signature_expiration].should eq(600)
   end
 
+  it "raises an exception when no host is defined in server" do
+    lambda {
+    PrivatePub.load_config("spec/fixtures/private_pub.yml", "no_host")
+    }.should raise_error PrivatePub::Error
+  end
+
   it "raises an exception if an invalid environment is passed to load_config" do
     lambda {
       PrivatePub.load_config("spec/fixtures/private_pub.yml", :test)

@@ -6,3 +6,7 @@ production:
   server: http://example.com/faye
   secret_token: PRODUCTION_SECRET_TOKEN
   signature_expiration: 600
+no_host:
+  server: http://:9292/faye
+  secret_token: NO_HOST_SECRET_TOKEN
+  signature_expiration: 600

@@ -1,13 +1,13 @@
 Gem::Specification.new do |s|
   s.name        = "peritus_private_pub"
-  s.version     = "1.0.2"
+  s.version     = "1.0.5"
   s.author      = "Tyler DeWitt"
   s.email       = "tdewitt@peritus.com"
   s.homepage    = "https://github.com/PeritusSolutions/peritus_private_pub"
   s.summary     = "Private pub/sub messaging in Rails."
   s.description = "Private pub/sub messaging in Rails through Faye."
 
-  s.files        = Dir["{app,lib,spec}/**/*", "[A-Z]*", "init.rb"] - ["Gemfile.lock"]
+  s.files        = Dir["{app,lib,spec}/**/*", "[A-Z]*", "init.rb"] - ["Gemfile.lock"] - Dir["*.gem"]
   s.require_path = "lib"
 
   s.add_dependency 'faye'

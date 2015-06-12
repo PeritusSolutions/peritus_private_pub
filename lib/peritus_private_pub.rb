@@ -2,6 +2,7 @@ require "digest/sha1"
 require "net/http"
 require "net/https"
 require "erb"
+require "YAML"
 
 require "private_pub/faye_extension"
 require "private_pub/engine" if defined? Rails
@@ -22,6 +23,8 @@ module PrivatePub
       yaml = YAML.load(ERB.new(File.read(filename)).result)[environment.to_s]
       raise ArgumentError, "The #{environment} environment does not exist in #{filename}" if yaml.nil?
       yaml.each { |k, v| config[k.to_sym] = v }
+      url = URI.parse(config[:server])
+      raise Error, "No host defined. Ensure LOCAL_IP is defined" unless url.host
     end
 
     # Publish the given data to a specific channel. This ends up sending
@@ -32,8 +35,8 @@ module PrivatePub
 
     # Sends the given message hash to the Faye server using Net::HTTP.
     def publish_message(message)
-      if config[:server].nil? or config[:server].blank?
-        raise Error, "No server specified, ensure private_pub.yml was loaded properly and that LOCAL_IP is defined."
+      raise Error, "No server specified, ensure private_pub.yml was loaded properly." unless config[:server]
+
       url = URI.parse(config[:server])
 
       form = Net::HTTP::Post.new(url.path.empty? ? '/' : url.path)
@@ -58,8 +61,6 @@ module PrivatePub
     # Returns a subscription hash to pass to the PrivatePub.sign call in JavaScript.
     # Any options passed are merged to the hash.
     def subscription(options = {})
-      if config[:server].nil? or config[:server].blank?
-        raise Error, "No server specified, ensure private_pub.yml was loaded properly and that LOCAL_IP is defined."
       sub = {:server => config[:server], :timestamp => (Time.now.to_f * 1000).round}.merge(options)
       sub[:signature] = Digest::SHA1.hexdigest([config[:secret_token], sub[:channel], sub[:timestamp]].join)
       sub
