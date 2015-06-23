@@ -23,8 +23,10 @@ module PrivatePub
       yaml = YAML.load(ERB.new(File.read(filename)).result)[environment.to_s]
       raise ArgumentError, "The #{environment} environment does not exist in #{filename}" if yaml.nil?
       yaml.each { |k, v| config[k.to_sym] = v }
-      url = URI.parse(config[:server])
-      raise Error, "No host defined. Ensure LOCAL_IP is defined" unless url.host
+      unless environment.to_s == 'test'
+        url = URI.parse(config[:server])
+        raise Error, "No host defined. Ensure LOCAL_IP is defined" unless url.host
+      end
     end
 
     # Publish the given data to a specific channel. This ends up sending
