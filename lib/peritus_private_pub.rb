@@ -8,7 +8,8 @@ require "private_pub/faye_extension"
 require "private_pub/engine" if defined? Rails
 
 module PrivatePub
-  class Error < StandardError; end
+  class Error < StandardError;
+  end
 
   class << self
     attr_reader :config
@@ -23,10 +24,8 @@ module PrivatePub
       yaml = YAML.load(ERB.new(File.read(filename)).result)[environment.to_s]
       raise ArgumentError, "The #{environment} environment does not exist in #{filename}" if yaml.nil?
       yaml.each { |k, v| config[k.to_sym] = v }
-      if environment.to_s == 'production'
-        url = URI.parse(config[:server])
-        raise Error, "No host defined. Ensure LOCAL_IP is defined" unless url.host
-      end
+      url = URI.parse(config[:server])
+      raise Error, "No host defined. Ensure LOCAL_IP is defined" unless url.host
     end
 
     # Publish the given data to a specific channel. This ends up sending
@@ -46,7 +45,7 @@ module PrivatePub
 
       http = Net::HTTP.new(url.host, url.port)
       http.use_ssl = url.scheme == "https"
-      http.start {|h| h.request(form)}
+      http.start { |h| h.request(form) }
     end
 
     # Returns a message hash for sending to Faye
